@@ -23,9 +23,14 @@
     },
     normalizeUrl: function(rel) {
        var cur = location.hash.slice(1);
-       var uri = new URI(rel)
-       var norm = uri.absoluteTo(cur);
-
+       var uri = new URI(rel);
+       var norm;
+       try {
+          norm = uri.absoluteTo(cur);
+        } catch(err) {
+          console.log('Could not normalize rel: ' + rel);
+          norm = rel;
+        }
        return norm
 	},
     buildUrl: function(rel) {
