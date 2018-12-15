@@ -14,6 +14,7 @@
     </style>
     <link rel="stylesheet" media="screen" href="vendor/css/bootstrap-responsive.css" />
     <link rel="stylesheet" media="screen" href="styles.css" />
+  <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet"></link>
   </head>
 
   <body>
@@ -79,7 +80,7 @@
                 <% } %>
               </td>
               <td>
-                <a class="non-get btn btn-warning" href="<%= HAL.normalizeUrl(link.href) %>" title="Perform non-GET request">!</a>
+                <a class="non-get btn btn-warning" href="<%= HAL.normalizeUrl(link.href) %>" title="Perform non-GET request" data-link-rel="<%=HAL.truncateIfUrl(rel) %>">!</a>
               </td>
             </tr>
           <% }); %>
@@ -101,7 +102,7 @@
               <% } %>
             </td>
             <td>
-              <a class="non-get btn btn-warning" href="<%= HAL.normalizeUrl(obj.href) %>" title="Perform non-GET request">!</a>
+              <a class="non-get btn btn-warning" href="<%= HAL.normalizeUrl(obj.href) %>" title="Perform non-GET request" data-link-rel="<%=HAL.truncateIfUrl(rel) %>">!</a>
             </td>
           </tr>
         <% } %>
@@ -172,21 +173,25 @@
 
     <form class="non-safe" action="<%= href %>">
       <div class="modal-body">
+
         <p>Target URI</p>
         <input name="url" type="text" class="url" value="<%= href %>" />
         <p>Method:</p>
         <input name="method" type="text" class="method" value="POST" />
         <p>Headers:</p>
-<textarea name="headers" class="headers" style="height: 100px">
+<textarea name="headers" class="headers" style="height: 50px">
 Content-Type: application/json
 <%= user_defined_headers %>
 </textarea>
+
+        <div class="osdi-body"></div>
         <p>Body:</p>
-<textarea name="body" class="body" style="height: 200px">
+<textarea name="body" class="osdi-json body" style="height: 50px">
 {
 
 }
 </textarea>
+
       </div>
 
       <div class="modal-footer">
@@ -213,10 +218,14 @@ Content-Type: application/json
 
   <script src="vendor/js/jquery-1.10.2.min.js"></script>
   <script src="vendor/js/underscore.js"></script>
+  <script src="vendor/js/underscore.inflection.js"></script>
   <script src="vendor/js/backbone.js"></script>
   <script src="vendor/js/uritemplates.js"></script>
   <script src="vendor/js/URI.min.js"></script>
   <script src="vendor/js/bootstrap.js"></script>
+  <script src="vendor/js/jsoneditor.js"></script>
+  <script src="vendor/js/jsoneditortheme.js"></script>
+
 
   <script src="js/hal.js"></script>
   <script src="js/hal/browser.js"></script>
@@ -253,5 +262,20 @@ Content-Type: application/json
       entryPoint: '/api/v1'
     });
     Backbone.history.start();
+
+    function osdi_schema_path(rel) {
+      var result, link_rel;
+      var rel_map={
+        "osdi:person_signup_helper" : "osdi_person_signup"
+      };
+
+      if ((link_rel=rel_map[rel])) {
+        result=link_rel;
+      } else {
+        var parts=rel.split(':');
+        result= parts[0] + "_" + _.singularize(parts[1])
+      }
+      return result;
+    }
   </script>
 </body>

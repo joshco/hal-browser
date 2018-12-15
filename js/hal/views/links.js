@@ -34,8 +34,11 @@ HAL.Views.Links = Backbone.View.extend({
     e.preventDefault();
 
     var postForm = (HAL.customPostForm !== undefined) ? HAL.customPostForm : HAL.Views.NonSafeRequestDialog;
+    console.log(e.currentTarget);
+    console.log($(e.currentTarget).attr('data-link-rel'));
     var d = new postForm({
       href: $(e.currentTarget).attr('href'),
+      link_rel: $(e.currentTarget).attr('data-link-rel'),
       vent: this.vent
     }).render({})
   },
