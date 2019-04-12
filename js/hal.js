@@ -24,6 +24,9 @@
     normalizeUrl: function(rel) {
        var cur = location.hash.slice(1);
        var uri = new URI(rel);
+       if (uri.is("absolute")) {
+         return rel;
+       }
        var norm;
        try {
           norm = uri.absoluteTo(cur);
